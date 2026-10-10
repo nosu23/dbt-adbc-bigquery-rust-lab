@@ -1,0 +1,3 @@
+[submodule "driver/arrow-adbc"]
+	path = driver/arrow-adbc
+	url = ssh://git@github.com/nosu23/arrow-adbc.git
