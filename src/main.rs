@@ -22,24 +22,24 @@ struct Config {
 
 impl Config {
     fn from_args() -> Result<Self, Box<dyn Error>> {
-        let mut driver_path = default_driver_path();
+        let mut driver_path = Self::default_driver_path();
         let mut project_id = env::var("GOOGLE_CLOUD_PROJECT").ok();
         let mut query = DEFAULT_QUERY.to_owned();
         let mut args = env::args().skip(1);
 
         while let Some(arg) = args.next() {
             match arg.as_str() {
-                "--driver" => driver_path = PathBuf::from(next_value(&mut args, "--driver")?),
-                "--project" => project_id = Some(next_value(&mut args, "--project")?),
-                "--query" => query = next_value(&mut args, "--query")?,
+                "--driver" => driver_path = PathBuf::from(Self::next_value(&mut args, "--driver")?),
+                "--project" => project_id = Some(Self::next_value(&mut args, "--project")?),
+                "--query" => query = Self::next_value(&mut args, "--query")?,
                 "-h" | "--help" => {
-                    print_usage();
+                    Self::print_usage();
                     std::process::exit(0);
                 }
                 _ => {
                     return Err(io::Error::new(
                         io::ErrorKind::InvalidInput,
-                        format!("unknown argument: {arg}\n\n{}", usage()),
+                        format!("unknown argument: {arg}\n\n{}", Self::usage()),
                     )
                     .into());
                 }
@@ -52,7 +52,7 @@ impl Config {
                 format!(
                     "BigQuery project ID is required; pass --project or set \
                      GOOGLE_CLOUD_PROJECT\n\n{}",
-                    usage()
+                    Self::usage()
                 ),
             )
         })?;
@@ -62,6 +62,33 @@ impl Config {
             project_id,
             query,
         })
+    }
+
+    fn default_driver_path() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("driver/arrow-adbc/go/adbc/pkg/libadbc_driver_bigquery.dylib")
+    }
+
+    fn next_value(
+        args: &mut impl Iterator<Item = String>,
+        option: &str,
+    ) -> Result<String, io::Error> {
+        args.next().ok_or_else(|| {
+            io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("{option} requires a value"),
+            )
+        })
+    }
+
+    fn print_usage() {
+        println!("{}", Self::usage());
+    }
+
+    fn usage() -> &'static str {
+        "Usage:\n  cargo run -- --project PROJECT_ID [--query SQL] [--driver PATH]\n\n\
+         Options:\n  --project PROJECT_ID  BigQuery billing/project ID\n  --query SQL            SQL to execute (default: SELECT 42 AS answer)\n  --driver PATH          BigQuery ADBC dynamic library path\n  -h, --help             Show this help\n\n\
+         GOOGLE_CLOUD_PROJECT may be used instead of --project."
     }
 }
 
@@ -105,28 +132,4 @@ fn main() -> Result<(), Box<dyn Error>> {
     print_batches(&batches)?;
 
     Ok(())
-}
-
-fn default_driver_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("driver/arrow-adbc/go/adbc/pkg/libadbc_driver_bigquery.dylib")
-}
-
-fn next_value(args: &mut impl Iterator<Item = String>, option: &str) -> Result<String, io::Error> {
-    args.next().ok_or_else(|| {
-        io::Error::new(
-            io::ErrorKind::InvalidInput,
-            format!("{option} requires a value"),
-        )
-    })
-}
-
-fn print_usage() {
-    println!("{}", usage());
-}
-
-fn usage() -> &'static str {
-    "Usage:\n  cargo run -- --project PROJECT_ID [--query SQL] [--driver PATH]\n\n\
-     Options:\n  --project PROJECT_ID  BigQuery billing/project ID\n  --query SQL            SQL to execute (default: SELECT 42 AS answer)\n  --driver PATH          BigQuery ADBC dynamic library path\n  -h, --help             Show this help\n\n\
-     GOOGLE_CLOUD_PROJECT may be used instead of --project."
 }
