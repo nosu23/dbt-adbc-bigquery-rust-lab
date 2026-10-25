@@ -27,3 +27,15 @@ rustc-ice-*.txt
 # Added by cargo
 
 /target
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.auto.tfvars
+crash.log
+crash.*.log
+
+# Keep the example configuration in version control.
+!*.tfvars.example
