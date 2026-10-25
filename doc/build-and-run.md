@@ -139,19 +139,19 @@ driver/arrow-adbc/rust/driver_manager
 まずコンパイル確認を行います。
 
 ```sh
-cargo check -p dbt-adbc-bigquery-rust-lab
+cargo check --manifest-path rust_lab/simple_bq_select/Cargo.toml
 ```
 
 実行ファイルをビルドする場合は次を実行します。
 
 ```sh
-cargo build -p dbt-adbc-bigquery-rust-lab
+cargo build --manifest-path rust_lab/simple_bq_select/Cargo.toml
 ```
 
 デバッグ用実行ファイルは次の場所に生成されます。
 
 ```text
-target/debug/dbt-adbc-bigquery-rust-lab
+rust_lab/simple_bq_select/target/debug/simple-bq-select
 ```
 
 submodule内の既存コードに由来する非推奨API警告が表示される場合がありますが、
@@ -185,8 +185,9 @@ SELECT 42 AS answer
 プロジェクトIDを指定して実行します。
 
 ```sh
-cargo run -p dbt-adbc-bigquery-rust-lab -- \
-  --project PROJECT_ID
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- \
+  --project PROJECT_ID \
+  --dataset DATASET_ID
 ```
 
 成功すると、結果がArrowのテーブルとして標準出力へ表示されます。
@@ -194,8 +195,9 @@ cargo run -p dbt-adbc-bigquery-rust-lab -- \
 任意のSQLを実行する場合は、`--query` を指定します。
 
 ```sh
-cargo run -p dbt-adbc-bigquery-rust-lab -- \
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- \
   --project PROJECT_ID \
+  --dataset DATASET_ID \
   --query 'SELECT CURRENT_TIMESTAMP() AS current_time'
 ```
 
@@ -203,21 +205,22 @@ cargo run -p dbt-adbc-bigquery-rust-lab -- \
 
 ```sh
 export GOOGLE_CLOUD_PROJECT=PROJECT_ID
-cargo run -p dbt-adbc-bigquery-rust-lab
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- --dataset DATASET_ID
 ```
 
 別の場所にあるドライバーをロードする場合は、`--driver` を指定します。
 
 ```sh
-cargo run -p dbt-adbc-bigquery-rust-lab -- \
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- \
   --project PROJECT_ID \
+  --dataset DATASET_ID \
   --driver /absolute/path/to/libadbc_driver_bigquery.dylib
 ```
 
 CLIオプションは次のコマンドで確認できます。
 
 ```sh
-cargo run -p dbt-adbc-bigquery-rust-lab -- --help
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- --help
 ```
 
 ## トラブルシューティング
@@ -275,8 +278,8 @@ gcloud auth application-default login
 次のファイルはGitで管理します。
 
 - Rustソースコード
-- `Cargo.toml`
-- `Cargo.lock`
+- `rust_lab/simple_bq_select/Cargo.toml`
+- `rust_lab/simple_bq_select/Cargo.lock`
 - `mise.toml`
 - この文書
 - submoduleが参照するコミット

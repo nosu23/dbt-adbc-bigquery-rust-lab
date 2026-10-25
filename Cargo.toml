@@ -1,9 +1,0 @@
-[package]
-name = "dbt-adbc-bigquery-rust-lab"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-adbc_core = { path = "driver/arrow-adbc/rust/core" }
-adbc_driver_manager = { path = "driver/arrow-adbc/rust/driver_manager" }
-arrow = { version = "57.3.1", features = ["prettyprint"] }
