@@ -21,7 +21,7 @@ const IMPERSONATE_SCOPES: &str = concat!(
     "https://www.googleapis.com/auth/userinfo.email"
 );
 const DEFAULT_DRIVER_RELATIVE_PATH: &str =
-    "driver/arrow-adbc/go/adbc/pkg/libadbc_driver_bigquery.dylib";
+    "../../driver/arrow-adbc/go/adbc/pkg/libadbc_driver_bigquery.dylib";
 const DEFAULT_QUERY: &str = "SELECT 42 AS answer";
 
 #[derive(Debug)]
@@ -119,7 +119,7 @@ impl Config {
     }
 
     fn usage() -> &'static str {
-        "Usage:\n  cargo run -- --project PROJECT_ID --dataset DATASET_ID [--impersonate-service-account EMAIL] [--query SQL] [--driver PATH]\n\n\
+        "Usage:\n  cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- --project PROJECT_ID --dataset DATASET_ID [--impersonate-service-account EMAIL] [--query SQL] [--driver PATH]\n\n\
          Options:\n  --project PROJECT_ID                 BigQuery billing/project ID\n  --dataset DATASET_ID                 BigQuery default dataset ID\n  --impersonate-service-account EMAIL  Service account to impersonate\n  --query SQL                           SQL to execute (default: SELECT 42 AS answer)\n  --driver PATH                         BigQuery ADBC dynamic library path\n  -h, --help                            Show this help\n\n\
          GOOGLE_CLOUD_PROJECT may be used instead of --project."
     }

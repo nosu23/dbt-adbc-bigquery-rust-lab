@@ -1,6 +1,6 @@
 # dbt-adbc-bigquery-rust-lab
 
-Small Rust application for loading a locally built BigQuery ADBC driver from
+Rust experiments for loading a locally built BigQuery ADBC driver from
 the dbt Labs fork of `arrow-adbc` and executing a query against BigQuery.
 
 ## Prerequisites
@@ -62,14 +62,15 @@ gcloud auth application-default set-quota-project PROJECT_ID
 The default query is `SELECT 42 AS answer`:
 
 ```sh
-cargo run -- --project PROJECT_ID
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- --project PROJECT_ID --dataset DATASET_ID
 ```
 
 Run a custom query:
 
 ```sh
-cargo run -- \
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- \
   --project PROJECT_ID \
+  --dataset DATASET_ID \
   --query 'SELECT CURRENT_TIMESTAMP() AS current_time'
 ```
 
@@ -77,7 +78,9 @@ cargo run -- \
 
 ```sh
 export GOOGLE_CLOUD_PROJECT=PROJECT_ID
-cargo run
+cargo run --manifest-path rust_lab/simple_bq_select/Cargo.toml -- --dataset DATASET_ID
 ```
 
 To load a driver from another location, pass `--driver PATH`.
+
+The dataset metadata experiment is in `rust_lab/get_dataset_metadata/`.
